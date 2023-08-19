@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
-import Deletetweet from "../forms/Deletetweet";
+import Deletetweet from "../forms/DeleteTweet";
 
 interface Props {
   id: string;
@@ -28,7 +28,7 @@ interface Props {
   isComment?: boolean;
 }
 
-function tweetCard({
+function TweetCard({
   id,
   currentUserId,
   parentId,
@@ -167,4 +167,4 @@ function tweetCard({
   );
 }
 
-export default tweetCard;
+export default TweetCard;

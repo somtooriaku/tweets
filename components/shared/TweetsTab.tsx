@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { fetchCommunityPosts } from "@/lib/actions/community.actions";
 import { fetchUserPosts } from "@/lib/actions/user.actions";
 
-import tweetCard from "../cards/tweetCard";
+import TweetCard from "../cards/TweetCard";
 
 interface Result {
   name: string;
@@ -38,7 +38,7 @@ interface Props {
   accountType: string;
 }
 
-async function tweetsTab({ currentUserId, accountId, accountType }: Props) {
+async function TweetsTab({ currentUserId, accountId, accountType }: Props) {
   let result: Result;
 
   if (accountType === "Community") {
@@ -54,7 +54,7 @@ async function tweetsTab({ currentUserId, accountId, accountType }: Props) {
   return (
     <section className='mt-9 flex flex-col gap-10'>
       {result.tweets.map((tweet) => (
-        <tweetCard
+        <TweetCard
           key={tweet._id}
           id={tweet._id}
           currentUserId={currentUserId}
@@ -82,4 +82,4 @@ async function tweetsTab({ currentUserId, accountId, accountType }: Props) {
   );
 }
 
-export default tweetsTab;
+export default TweetsTab;
