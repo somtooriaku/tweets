@@ -4,9 +4,10 @@ import { redirect } from "next/navigation";
 
 import { profileTabs } from "@/constants";
 
-import tweetsTab from "@/components/shared/TweetsTab";
+// import TweetsTab from "@/components/shared/TweetsTab";
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TweetsTab from "@/components/shared/TweetsTab";
 
 import { fetchUser } from "@/lib/actions/user.actions";
 
@@ -44,7 +45,7 @@ async function Page({ params }: { params: { id: string } }) {
 
                 {tab.label === "tweets" && (
                   <p className='ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2'>
-                    {userInfo.threads.length}
+                    {userInfo.tweets.length}
                   </p>
                 )}
               </TabsTrigger>
@@ -57,7 +58,7 @@ async function Page({ params }: { params: { id: string } }) {
               className='w-full text-light-1'
             >
               {/* @ts-ignore */}
-              <tweetsTab
+              <TweetsTab
                 currentUserId={user.id}
                 accountId={userInfo.id}
                 accountType='User'

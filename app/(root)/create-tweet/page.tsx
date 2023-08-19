@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-import tweetCard from "@/components/cards/TweetCard";
+import TweetCard from "@/components/cards/TweetCard";
 import Pagination from "@/components/shared/Pagination";
 
 import { fetchPosts } from "@/lib/actions/tweet.actions";
@@ -33,7 +33,7 @@ async function Home({
         ) : (
           <>
             {result.posts.map((post) => (
-              <tweetCard
+              <TweetCard
                 key={post._id}
                 id={post._id}
                 currentUserId={user.id}

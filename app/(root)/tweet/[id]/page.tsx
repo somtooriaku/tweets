@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
 
 import Comment from "@/components/forms/Comment";
-import tweetCard from "@/components/cards/tweetCard";
+import TweetCard from "@/components/cards/TweetCard";
 
 import { fetchUser } from "@/lib/actions/user.actions";
 import { fetchtweetById } from "@/lib/actions/tweet.actions";
@@ -23,7 +23,7 @@ async function page({ params }: { params: { id: string } }) {
   return (
     <section className='relative'>
       <div>
-        <tweetCard
+        <TweetCard
           id={tweet._id}
           currentUserId={user.id}
           parentId={tweet.parentId}
@@ -45,7 +45,7 @@ async function page({ params }: { params: { id: string } }) {
 
       <div className='mt-10'>
         {tweet.children.map((childItem: any) => (
-          <tweetCard
+          <TweetCard
             key={childItem._id}
             id={childItem._id}
             currentUserId={user.id}
