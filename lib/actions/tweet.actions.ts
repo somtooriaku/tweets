@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { connectToDB } from "../mongoose";
 
 import User from "../models/user.model";
-import tweet from "../models/tweet.model";
+import Tweet from "../models/tweet.model";
 import Community from "../models/community.model";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
@@ -15,7 +15,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   const skipAmount = (pageNumber - 1) * pageSize;
 
   // Create a query to fetch the posts that have no parent (top-level tweets) (a tweet that is not a comment/reply).
-  const postsQuery = tweet.find({ parentId: { $in: [null, undefined] } })
+  const postsQuery = Tweet.find({ parentId: { $in: [null, undefined] } })
     .sort({ createdAt: "desc" })
     .skip(skipAmount)
     .limit(pageSize)
@@ -37,7 +37,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
     });
 
   // Count the total number of top-level posts (tweets) i.e., tweets that are not comments.
-  const totalPostsCount = await tweet.countDocuments({
+  const totalPostsCount = await Tweet.countDocuments({
     parentId: { $in: [null, undefined] },
   }); // Get the total count of posts
 
@@ -65,7 +65,7 @@ export async function createtweet({ text, author, communityId, path }: Params
       { _id: 1 }
     );
 
-    const createdtweet = await tweet.create({
+    const createdtweet = await Tweet.create({
       text,
       author,
       community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
@@ -90,7 +90,7 @@ export async function createtweet({ text, author, communityId, path }: Params
 }
 
 async function fetchAllChildtweets(tweetId: string): Promise<any[]> {
-  const childtweets = await tweet.find({ parentId: tweetId });
+  const childtweets = await Tweet.find({ parentId: tweetId });
 
   const descendanttweets = [];
   for (const childtweet of childtweets) {
@@ -106,7 +106,7 @@ export async function deletetweet(id: string, path: string): Promise<void> {
     connectToDB();
 
     // Find the tweet to be deleted (the main tweet)
-    const maintweet = await tweet.findById(id).populate("author community");
+    const maintweet = await Tweet.findById(id).populate("author community");
 
     if (!maintweet) {
       throw new Error("tweet not found");
@@ -137,7 +137,7 @@ export async function deletetweet(id: string, path: string): Promise<void> {
     );
 
     // Recursively delete child tweets and their descendants
-    await tweet.deleteMany({ _id: { $in: descendanttweetIds } });
+    await Tweet.deleteMany({ _id: { $in: descendanttweetIds } });
 
     // Update User model
     await User.updateMany(
@@ -161,7 +161,7 @@ export async function fetchtweetById(tweetId: string) {
   connectToDB();
 
   try {
-    const tweet = await tweet.findById(tweetId)
+    const tweet = await Tweet.findById(tweetId)
       .populate({
         path: "author",
         model: User,
@@ -182,7 +182,7 @@ export async function fetchtweetById(tweetId: string) {
           },
           {
             path: "children", // Populate the children field within children
-            model: tweet, // The model of the nested children (assuming it's the same "tweet" model)
+            model: Tweet, // The model of the nested children (assuming it's the same "tweet" model)
             populate: {
               path: "author", // Populate the author field within nested children
               model: User,
@@ -210,14 +210,14 @@ export async function addCommentTotweet(
 
   try {
     // Find the original tweet by its ID
-    const originaltweet = await tweet.findById(tweetId);
+    const originaltweet = await Tweet.findById(tweetId);
 
     if (!originaltweet) {
       throw new Error("tweet not found");
     }
 
     // Create the new comment tweet
-    const commenttweet = new tweet({
+    const commenttweet = new Tweet({
       text: commentText,
       author: userId,
       parentId: tweetId, // Set the parentId to the original tweet's ID
